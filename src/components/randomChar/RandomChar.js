@@ -1,4 +1,4 @@
-import { Component } from 'react/cjs/react.production.min';
+import { Component } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import MarvelService from '../../services/MarvelService';
@@ -10,6 +10,7 @@ class RandomChar extends Component {
     state = {
         char: {},
         loading: true,
+        error: false,
     };
 
     marvelService = new MarvelService();
@@ -18,16 +19,18 @@ class RandomChar extends Component {
         this.updateChar();
     }
 
-    componentWillUnmount() {
-    }
-
-
     onCharLoaded = (char) => {
         this.setState({ 
             char,
             loading : false,
             error: false,
         });
+    }
+
+    onCharLoading = () => {
+        this.setState({
+            loading: true,
+        })
     }
 
     onError = () => {
@@ -39,7 +42,8 @@ class RandomChar extends Component {
 
     updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-
+        
+        this.onCharLoading();
         this.marvelService
             .getCharacter(id)
             .then(this.onCharLoaded)

@@ -1,4 +1,4 @@
-import { Component } from 'react/cjs/react.production.min';
+import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -15,8 +15,7 @@ class CharList extends Component {
     marvelService = new MarvelService();
 
     componentDidMount() {
-        this.marvelService
-            .getAllCharacters()
+        this.marvelService.getAllCharacters()
             .then(this.onCharListLoaded)
             .catch(this.onError);
     }
@@ -36,7 +35,6 @@ class CharList extends Component {
     }
 
     renderCharList(arrChar) {
-        console.log(arrChar);
         const items = arrChar.map(({ id, thumbnail, name }) => {
 
 
@@ -46,8 +44,8 @@ class CharList extends Component {
                 thumbnailClassList = 'randomchar__img contain' : thumbnailClassList = 'randomchar__img';
 
             return (
-                <li className="char__item" key={id}>
-                    <img src={thumbnail} alt="{item.name}" className={thumbnailClassList} />
+                <li className="char__item" key={id} onClick={() => this.props.onCharSelected(id)} >
+                    <img src={thumbnail} alt={name} className={thumbnailClassList} />
                     <div className="char__name">{name}</div>
                 </li>
             );
