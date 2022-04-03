@@ -36,7 +36,8 @@
             transform: translateY(-8px);
         }
     }
-    &__item:hover {
+    &__item:hover,
+    &__item:focus-visible {
         box-shadow: 0 5px 20px $main-color;
         transform: translateY(-8px);
     }

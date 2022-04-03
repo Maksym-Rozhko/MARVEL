@@ -11,7 +11,7 @@ class CharList extends Component {
         loading: true,
         error: false,
         loadingMore: false,
-        offset: 1541,
+        offset: 210,
         charEnded: false,
     }
 
@@ -57,9 +57,21 @@ class CharList extends Component {
         })
     }
 
-    renderCharList(arrChar) {
-        const items = arrChar.map(({ id, thumbnail, name }) => {
+    itemRefs = [];
 
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
+    }
+
+    focusOnItem = (id) => {
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[id].classList.add('char__item_selected');
+        this.itemRefs[id].focus();
+    }
+
+    renderCharList(arrChar) {
+        const items = arrChar.map((item, i) => {
+            const { id, thumbnail, name } = item;
 
             let thumbnailClassList;
 
@@ -67,7 +79,21 @@ class CharList extends Component {
                 thumbnailClassList = 'randomchar__img contain' : thumbnailClassList = 'randomchar__img';
 
             return (
-                <li className="char__item" key={id} onClick={() => this.props.onCharSelected(id)} >
+                <li 
+                    className="char__item" 
+                    key={id} onClick={() => {
+                        this.props.onCharSelected(id);
+                        this.focusOnItem(i);
+                    }}
+                    tabIndex={0}
+                    ref={this.setRef}
+                    onKeyPress={(e) => {
+                        if (e.key === ' ' || e.key === "Enter") {
+                            this.props.onCharSelected(id);
+                            this.focusOnItem(i);
+                        }
+                    }}
+                    >
                     <img src={thumbnail} alt={name} className={thumbnailClassList} />
                     <div className="char__name">{name}</div>
                 </li>
