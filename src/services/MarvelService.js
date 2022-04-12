@@ -1,29 +1,25 @@
-class MarvelService {
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-    _apiKey = '******************************************';
-    _baseCharsOffset = 210;
+import { useHttp } from "../hooks/http.hook";
 
-    getResource = async (url) => {
-        let res = await fetch(url);
-    
-        if (!res.ok) {
-            throw new Error (`Could not fetch ${url}, status ${res.status}`);
-        }
-    
-        return await res.json();
+
+const useMarvelService = () => {
+
+    const {loading, request, error, clearError} = useHttp();
+
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+    const _apiKey = '******************************************';
+    const _baseCharsOffset = 210;
+
+    const getAllCharacters = async (offset = _baseCharsOffset) => {
+        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(char => _transformCharacter(char));
     }
 
-    getAllCharacters = async (offset = this._baseCharsOffset) => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
-        return res.data.results.map(char => this._transformCharacter(char));
+    const getCharacter = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        return _transformCharacter(res.data.results[0]);
     }
 
-    getCharacter = async (id) => {
-        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
-        return this._transformCharacter(res.data.results[0]);
-    }
-
-    _transformCharacter = (char) => {
+    const _transformCharacter = (char) => {
         return {
             id: char.id,
             name: char.name,
@@ -34,6 +30,8 @@ class MarvelService {
             comics: char.comics.items,
         }
     }
+
+    return {loading, error, clearError, getAllCharacters, getCharacter}
 }
 
-export default MarvelService;
+export default useMarvelService;
