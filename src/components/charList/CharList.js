@@ -85,7 +85,7 @@ const CharList = (props) => {
     }
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !setLoadingMore ? <Spinner/> : null;
+    const spinner = loading && !loadingMore ? <Spinner/> : null;
     const content = renderCharList(charList);
 
     return (
